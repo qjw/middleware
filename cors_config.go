@@ -1,13 +1,12 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"log"
 )
-
 
 func generateNormalCorsHeaders(c *CorsConfig) http.Header {
 	headers := make(http.Header)
@@ -83,7 +82,7 @@ func newCors(config *CorsConfig) *corsConfig {
 	}
 }
 
-func (cors *corsConfig) applyCors(w http.ResponseWriter, r* http.Request)(res bool){
+func (cors *corsConfig) applyCors(w http.ResponseWriter, r *http.Request) (res bool) {
 	res = true
 	origin := r.Header.Get("Origin")
 	if len(origin) == 0 {
@@ -92,7 +91,7 @@ func (cors *corsConfig) applyCors(w http.ResponseWriter, r* http.Request)(res bo
 	}
 	if !cors.validateOrigin(origin) {
 		// c.AbortWithStatus(http.StatusForbidden)
-		setHttpCode(w,http.StatusForbidden)
+		setHttpCode(w, http.StatusForbidden)
 		res = false
 		return
 	}
@@ -101,7 +100,7 @@ func (cors *corsConfig) applyCors(w http.ResponseWriter, r* http.Request)(res bo
 	if r.Method == "OPTIONS" {
 		cors.handlePreflight(w)
 		// 必须在最后才设置http code
-		defer setHttpCode(w,http.StatusOK)
+		defer setHttpCode(w, http.StatusOK)
 		res = false
 		// 不能直接退出，因为后面要加上Access-Control-Allow-Origin
 	} else {
@@ -131,7 +130,7 @@ func (cors *corsConfig) validateOrigin(origin string) bool {
 
 func (cors *corsConfig) handlePreflight(w http.ResponseWriter) {
 	for key, value := range cors.preflightHeaders {
-		log.Printf("key %s value %s",key,value)
+		log.Printf("key %s value %s", key, value)
 		w.Header()[key] = value
 	}
 }

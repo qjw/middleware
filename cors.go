@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"strings"
-	"time"
 	"errors"
 	"net/http"
+	"strings"
+	"time"
 )
 
 // Config represents all available options for the middleware.
@@ -76,7 +76,7 @@ func (c CorsConfig) Validate() error {
 }
 
 // DefaultConfig returns a generic default configuration mapped to localhost.
-func DefaultConfig() *CorsConfig {
+func DefaultCorsConfig() *CorsConfig {
 	return &CorsConfig{
 		AllowMethods:     []string{"GET", "POST", "PUT", "HEAD"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
@@ -87,7 +87,7 @@ func DefaultConfig() *CorsConfig {
 
 // Default returns the location middleware with default configuration.
 func DefaultCors() ServeHTTP {
-	config := DefaultConfig()
+	config := DefaultCorsConfig()
 	config.AllowAllOrigins = true
 	return Cors(config)
 }
@@ -95,7 +95,7 @@ func DefaultCors() ServeHTTP {
 // New returns the location middleware with user-defined custom configuration.
 func Cors(config *CorsConfig) ServeHTTP {
 	cors := newCors(config)
-	return func(w http.ResponseWriter, r* http.Request)(bool){
+	return func(w http.ResponseWriter, r *http.Request) bool {
 		return cors.applyCors(w, r)
 	}
 }

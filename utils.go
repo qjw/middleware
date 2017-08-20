@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"strings"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func normalize(values []string) []string {
@@ -24,6 +24,7 @@ func normalize(values []string) []string {
 }
 
 type converter func(string) string
+
 func convert(s []string, c converter) []string {
 	var out []string
 	for _, i := range s {
@@ -32,7 +33,7 @@ func convert(s []string, c converter) []string {
 	return out
 }
 
-func setHttpCode(w http.ResponseWriter,code int){
+func setHttpCode(w http.ResponseWriter, code int) {
 	w.WriteHeader(code)
 	w.Write([]byte(strconv.Itoa(code) + " - " + http.StatusText(code)))
 }

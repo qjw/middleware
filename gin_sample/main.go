@@ -13,6 +13,11 @@ func main() {
 			AllowOrigins: []string{"http://news.163.com"},
 		})))
 
+	r.Use(middleware.GinHandle(middleware.Secure(&middleware.SecureConfig{
+		AllowedHosts:          []string{"qjw.com:9090","qjw.com"},
+		ContentSecurityPolicy: "",
+	})))
+
 	r.GET("/nocache", middleware.GinHandle(middleware.NoCache()),
 		func(c *gin.Context) {
 			c.JSON(200, gin.H{
